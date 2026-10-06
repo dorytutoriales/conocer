@@ -3,60 +3,142 @@
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\CertificationController as AdminCertificationController;
 use App\Http\Controllers\CertificationSearchController;
-use App\Http\Middleware\EnsureUserIsAdmin;
 use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Página pública
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
     return view('index');
 })->name('home');
 
-Route::get('/buscar-certificaciones', CertificationSearchController::class)
+/*
+|--------------------------------------------------------------------------
+| Búsqueda pública de certificaciones
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/buscar-certificaciones',
+    CertificationSearchController::class
+)
     ->middleware('throttle:30,1')
     ->name('certifications.search');
 
 /*
 |--------------------------------------------------------------------------
-| Inicio de sesión administrador
+| Inicio de sesión del administrador
 |--------------------------------------------------------------------------
-|
-| El nombre "login" es importante para que el middleware auth de Laravel
-| pueda redirigir automáticamente a esta ruta cuando una sesión haya
-| expirado o un usuario no autenticado intente ingresar al panel.
-|
 */
 
-Route::get('/admin', [AdminAuthController::class, 'create'])
-    ->name('login');
+Route::get(
+    '/admin',
+    [
+        AdminAuthController::class,
+        'create',
+    ]
+)->name('login');
 
-Route::post('/admin/iniciar-sesion', [AdminAuthController::class, 'store'])
+Route::post(
+    '/admin/iniciar-sesion',
+    [
+        AdminAuthController::class,
+        'store',
+    ]
+)
     ->middleware('throttle:10,1')
     ->name('admin.login.store');
 
 /*
 |--------------------------------------------------------------------------
-| Rutas protegidas del administrador
+| Panel de administración
 |--------------------------------------------------------------------------
+|
+| Estas rutas requieren:
+|
+| 1. Que exista una sesión iniciada.
+| 2. Que el usuario tenga is_admin = 1.
+|
 */
 
 Route::prefix('admin')
     ->name('admin.')
     ->middleware([
         'auth',
-        EnsureUserIsAdmin::class,
+        'can:access-admin',
     ])
-    ->group(function () {
-        Route::get('/panel-de-control', [AdminCertificationController::class, 'index'])
-            ->name('panel');
+    ->group(function (): void {
 
-        Route::post('/certificaciones', [AdminCertificationController::class, 'store'])
-            ->name('certifications.store');
+        /*
+        |--------------------------------------------------------------------------
+        | Panel
+        |--------------------------------------------------------------------------
+        */
 
-        Route::put('/certificaciones/{certification}', [AdminCertificationController::class, 'update'])
-            ->name('certifications.update');
+        Route::get(
+            '/panel-de-control',
+            [
+                AdminCertificationController::class,
+                'index',
+            ]
+        )->name('panel');
 
-        Route::delete('/certificaciones/{certification}', [AdminCertificationController::class, 'destroy'])
-            ->name('certifications.destroy');
+        /*
+        |--------------------------------------------------------------------------
+        | Crear certificación
+        |--------------------------------------------------------------------------
+        */
 
-        Route::post('/cerrar-sesion', [AdminAuthController::class, 'destroy'])
-            ->name('logout');
+        Route::post(
+            '/certificaciones',
+            [
+                AdminCertificationController::class,
+                'store',
+            ]
+        )->name('certifications.store');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Actualizar certificación
+        |--------------------------------------------------------------------------
+        */
+
+        Route::put(
+            '/certificaciones/{certification}',
+            [
+                AdminCertificationController::class,
+                'update',
+            ]
+        )->name('certifications.update');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Eliminar certificación
+        |--------------------------------------------------------------------------
+        */
+
+        Route::delete(
+            '/certificaciones/{certification}',
+            [
+                AdminCertificationController::class,
+                'destroy',
+            ]
+        )->name('certifications.destroy');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Cerrar sesión
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/cerrar-sesion',
+            [
+                AdminAuthController::class,
+                'destroy',
+            ]
+        )->name('logout');
     });
