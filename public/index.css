@@ -1374,3 +1374,266 @@ a {
   }
 
 }
+
+/* =========================================================
+   RESULTADOS REALES
+========================================================= */
+
+.renap-table tbody tr:not(.placeholder-row) td {
+  height: 49px;
+
+  padding: 8px;
+
+  border-top: 1px solid #dedede;
+  border-right: 1px solid #dedede;
+
+  color: #000000;
+  background: #f0f0f0;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  line-height: 1.25;
+
+  vertical-align: top;
+}
+
+
+.renap-table tbody tr:not(.placeholder-row) td:last-child {
+  border-right: 0;
+}
+
+
+.placeholder-row td {
+  height: 40px !important;
+
+  border-right: 0 !important;
+
+  background: #ffffff !important;
+
+  font-weight: 400 !important;
+}
+
+
+/* =========================================================
+   BOTÓN BUSCAR CARGANDO
+========================================================= */
+
+.btn-search:disabled {
+  color: #777777;
+  background: #eeeeee;
+
+  border-color: #b7b7b7;
+
+  cursor: wait;
+
+  opacity: 0.7;
+}
+
+
+/* =========================================================
+   BLOQUEAR SCROLL DURANTE CARGA
+========================================================= */
+
+body.is-loading {
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   OVERLAY DE CARGA
+========================================================= */
+
+.loading-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 99999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(0, 0, 0, 0.79);
+}
+
+
+.loading-overlay[hidden] {
+  display: none !important;
+}
+
+
+/* =========================================================
+   CONTENIDO DEL LOADER
+========================================================= */
+
+.loading-content {
+  min-width: 170px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffffff;
+
+  text-align: center;
+}
+
+
+.loading-content p {
+  margin: 8px 0 0;
+
+  color: #ffffff;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 12px;
+  font-weight: 400;
+
+  line-height: 1;
+}
+
+
+/* =========================================================
+   LOADER CENTRAL
+========================================================= */
+
+.renap-loader {
+  position: relative;
+
+  width: 75px;
+  height: 75px;
+
+  animation:
+    renap-loader-spin
+    1.45s
+    linear
+    infinite;
+}
+
+
+/* =========================================================
+   CÍRCULO CENTRAL
+========================================================= */
+
+.renap-loader__center {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 27px;
+  height: 27px;
+
+  border-radius: 50%;
+
+  background: #b7b7b7;
+
+  transform:
+    translate(-50%, -50%);
+
+  box-shadow:
+    0 0 0 1px
+    rgba(255, 255, 255, 0.10);
+}
+
+
+.renap-loader__center::after {
+  content: "";
+
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 16px;
+  height: 16px;
+
+  border-radius: 50%;
+
+  background: #ef3a3a;
+
+  transform:
+    translate(-50%, -50%);
+}
+
+
+/* =========================================================
+   PUNTOS ROJOS
+========================================================= */
+
+.renap-loader__dot {
+  position: absolute;
+
+  display: block;
+
+  border-radius: 50%;
+
+  background: #e72323;
+
+  box-shadow:
+    0 0 4px
+    rgba(231, 35, 35, 0.35);
+}
+
+
+.renap-loader__dot--1 {
+  top: 7px;
+  left: 31px;
+
+  width: 10px;
+  height: 10px;
+}
+
+
+.renap-loader__dot--2 {
+  top: 38px;
+  left: 9px;
+
+  width: 9px;
+  height: 9px;
+}
+
+
+.renap-loader__dot--3 {
+  top: 52px;
+  right: 12px;
+
+  width: 7px;
+  height: 7px;
+}
+
+
+/* =========================================================
+   ANIMACIÓN
+========================================================= */
+
+@keyframes renap-loader-spin {
+
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+/* =========================================================
+   ACCESIBILIDAD
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .renap-loader {
+    animation-duration: 3s;
+  }
+
+}

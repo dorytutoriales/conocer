@@ -86,11 +86,19 @@ const searchForm =
 const searchInput =
   document.getElementById('search-input');
 
+const searchButton =
+  document.getElementById('search-button');
+
 const resultsBody =
   document.getElementById('results-body');
 
 const emptyState =
   document.getElementById('empty-state');
+
+const loadingOverlay =
+  document.getElementById('loading-overlay');
+
+let isSearching = false;
 
 
 /* =========================================================
@@ -110,64 +118,251 @@ if (searchInput) {
 
 
 /* =========================================================
-   FUNCIÓN PARA OBTENER FILAS REALES
+   ESPERA
 ========================================================= */
 
-function getResultRows() {
+function wait(milliseconds) {
 
-  if (!resultsBody) {
-    return [];
+  return new Promise((resolve) => {
+
+    window.setTimeout(
+      resolve,
+      milliseconds
+    );
+
+  });
+
+}
+
+
+/* =========================================================
+   ACTIVAR / DESACTIVAR CARGA
+========================================================= */
+
+function setLoading(isLoading) {
+
+  if (loadingOverlay) {
+
+    loadingOverlay.hidden =
+      !isLoading;
+
+    loadingOverlay.setAttribute(
+      'aria-hidden',
+      String(!isLoading)
+    );
+
   }
 
 
-  return Array.from(
-    resultsBody.querySelectorAll(
-      'tr:not(.placeholder-row)'
-    )
+  if (searchButton) {
+
+    searchButton.disabled =
+      isLoading;
+
+  }
+
+
+  document.body.classList.toggle(
+    'is-loading',
+    isLoading
   );
 
 }
 
 
 /* =========================================================
-   CONTROLAR FILA VACÍA
+   CREAR FILA VACÍA
 ========================================================= */
 
-function updatePlaceholder() {
+function createPlaceholderRow() {
+
+  const row =
+    document.createElement('tr');
+
+  row.className =
+    'placeholder-row';
+
+
+  const cell =
+    document.createElement('td');
+
+  cell.colSpan = 7;
+  cell.innerHTML = '&nbsp;';
+
+
+  row.appendChild(cell);
+
+  return row;
+
+}
+
+
+/* =========================================================
+   MOSTRAR MENSAJE
+========================================================= */
+
+function showMessage(message) {
 
   if (!resultsBody) {
     return;
   }
 
 
-  const placeholder =
-    resultsBody.querySelector(
-      '.placeholder-row'
-    );
+  resultsBody.replaceChildren(
+    createPlaceholderRow()
+  );
 
 
-  const rows =
-    getResultRows();
+  if (emptyState) {
 
+    emptyState.textContent =
+      message;
 
-  if (!placeholder) {
-    return;
+    emptyState.hidden =
+      false;
+
   }
-
-
-  /*
-   * Si existen resultados reales,
-   * ocultamos la fila vacía.
-   */
-
-  placeholder.hidden =
-    rows.length > 0;
 
 }
 
 
 /* =========================================================
-   FILTRAR RESULTADOS
+   MOSTRAR RESULTADOS
+========================================================= */
+
+function renderResults(records) {
+
+  if (!resultsBody) {
+    return;
+  }
+
+
+  resultsBody.replaceChildren();
+
+
+  if (
+    !Array.isArray(records) ||
+    records.length === 0
+  ) {
+
+    resultsBody.appendChild(
+      createPlaceholderRow()
+    );
+
+
+    if (emptyState) {
+
+      emptyState.textContent =
+        'No se encontraron resultados.';
+
+      emptyState.hidden =
+        false;
+
+    }
+
+
+    return;
+
+  }
+
+
+  if (emptyState) {
+
+    emptyState.hidden =
+      true;
+
+  }
+
+
+  const columns = [
+    'folio',
+    'tipo',
+    'codigo',
+    'titulo',
+    'entidad',
+    'siglas',
+    'evaluador',
+  ];
+
+
+  records.forEach((record) => {
+
+    const row =
+      document.createElement('tr');
+
+
+    columns.forEach((column) => {
+
+      const cell =
+        document.createElement('td');
+
+
+      cell.textContent =
+        record[column] ?? '';
+
+
+      row.appendChild(cell);
+
+    });
+
+
+    resultsBody.appendChild(row);
+
+  });
+
+}
+
+
+/* =========================================================
+   EXTRAER ERROR DEL SERVIDOR
+========================================================= */
+
+async function getErrorMessage(response) {
+
+  try {
+
+    const payload =
+      await response.json();
+
+
+    if (
+      payload.errors &&
+      typeof payload.errors === 'object'
+    ) {
+
+      const firstError =
+        Object.values(
+          payload.errors
+        )
+          .flat()
+          .find(Boolean);
+
+
+      if (firstError) {
+        return firstError;
+      }
+
+    }
+
+
+    if (payload.message) {
+      return payload.message;
+    }
+
+  } catch (error) {
+
+    return 'No se pudo realizar la búsqueda.';
+
+  }
+
+
+  return 'No se pudo realizar la búsqueda.';
+
+}
+
+
+/* =========================================================
+   BUSCAR
 ========================================================= */
 
 if (
@@ -178,9 +373,14 @@ if (
 
   searchForm.addEventListener(
     'submit',
-    (event) => {
+    async (event) => {
 
       event.preventDefault();
+
+
+      if (isSearching) {
+        return;
+      }
 
 
       const query =
@@ -189,80 +389,138 @@ if (
           .toUpperCase();
 
 
-      const rows =
-        getResultRows();
+      if (query === '') {
 
+        searchInput.focus();
 
-      let visibleRows = 0;
-
-
-      rows.forEach((row) => {
-
-        const rowText =
-          row.textContent
-            .trim()
-            .toUpperCase();
-
-
-        const matches =
-          query === '' ||
-          rowText.includes(query);
-
-
-        row.hidden =
-          !matches;
-
-
-        if (matches) {
-          visibleRows += 1;
-        }
-
-      });
-
-
-      /*
-       * La captura de referencia deja la tabla vacía
-       * cuando todavía no existen datos.
-       *
-       * Por eso solo mostramos "No se encontraron
-       * resultados" cuando realmente existen filas
-       * y ninguna coincide.
-       */
-
-      if (emptyState) {
-
-        if (
-          rows.length > 0 &&
-          query !== '' &&
-          visibleRows === 0
-        ) {
-
-          emptyState.hidden =
-            false;
-
-        } else {
-
-          emptyState.hidden =
-            true;
-
-        }
+        return;
 
       }
 
 
-      updatePlaceholder();
+      const searchUrl =
+        searchForm.dataset.searchUrl;
+
+
+      if (!searchUrl) {
+
+        showMessage(
+          'No se pudo iniciar la búsqueda.'
+        );
+
+        return;
+
+      }
+
+
+      isSearching = true;
+
+      const startedAt =
+        performance.now();
+
+
+      setLoading(true);
+
+
+      if (emptyState) {
+
+        emptyState.hidden =
+          true;
+
+      }
+
+
+      try {
+
+        const url =
+          new URL(
+            searchUrl,
+            window.location.origin
+          );
+
+
+        url.searchParams.set(
+          'q',
+          query
+        );
+
+
+        const response =
+          await fetch(
+            url.toString(),
+            {
+              method: 'GET',
+
+              headers: {
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+              },
+
+              credentials: 'same-origin',
+            }
+          );
+
+
+        if (!response.ok) {
+
+          const message =
+            await getErrorMessage(
+              response
+            );
+
+
+          throw new Error(message);
+
+        }
+
+
+        const payload =
+          await response.json();
+
+
+        renderResults(
+          payload.data ?? []
+        );
+
+      } catch (error) {
+
+        showMessage(
+          error instanceof Error
+            ? error.message
+            : 'No se pudo realizar la búsqueda.'
+        );
+
+      } finally {
+
+        const elapsed =
+          performance.now() -
+          startedAt;
+
+
+        const remaining =
+          Math.max(
+            0,
+            800 - elapsed
+          );
+
+
+        if (remaining > 0) {
+
+          await wait(remaining);
+
+        }
+
+
+        setLoading(false);
+
+        isSearching = false;
+
+      }
 
     }
   );
 
 }
-
-
-/* =========================================================
-   ACTUALIZAR PLACEHOLDER AL INICIAR
-========================================================= */
-
-updatePlaceholder();
 
 
 /* =========================================================

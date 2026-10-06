@@ -47,7 +47,6 @@
 
   <header class="site-header">
 
-    <!-- BARRA PRINCIPAL -->
     <nav
       class="gov-navbar"
       aria-label="Navegación Gobierno de México"
@@ -55,7 +54,6 @@
 
       <div class="site-container gov-navbar__inner">
 
-        <!-- LOGO -->
         <a
           class="gov-navbar__brand"
           href="https://www.gob.mx/"
@@ -71,7 +69,6 @@
         </a>
 
 
-        <!-- BOTÓN MOBILE -->
         <button
           class="menu-toggle"
           type="button"
@@ -91,7 +88,6 @@
         </button>
 
 
-        <!-- MENÚ -->
         <div
           class="gov-navbar__menu"
           id="gov-menu"
@@ -125,10 +121,6 @@
     </nav>
 
 
-    <!-- ===================================================
-         SEGUNDA BARRA
-    ==================================================== -->
-
     <nav
       class="sub-navbar"
       aria-label="Navegación CONOCER"
@@ -144,7 +136,6 @@
         </a>
 
 
-        <!-- BOTÓN MOBILE -->
         <button
           class="menu-toggle menu-toggle--light"
           type="button"
@@ -186,18 +177,10 @@
   </header>
 
 
-  <!-- =====================================================
-       CONTENIDO
-  ====================================================== -->
-
   <main class="page-content">
 
     <div class="site-container">
 
-
-      <!-- ===================================================
-           TÍTULO
-      ==================================================== -->
 
       <div class="title-container">
 
@@ -209,10 +192,6 @@
 
       </div>
 
-
-      <!-- ===================================================
-           INFORMACIÓN
-      ==================================================== -->
 
       <section
         class="legal-text"
@@ -276,16 +255,11 @@
       </section>
 
 
-      <!-- ===================================================
-           RENAP
-      ==================================================== -->
-
       <section
         class="renap-panel"
         id="renap"
       >
 
-        <!-- BANNER -->
         <div class="renap-banner">
 
           Registro Nacional de personas con competencias certificadas
@@ -293,7 +267,6 @@
         </div>
 
 
-        <!-- DESCRIPCIÓN -->
         <p class="renap-description">
 
           En el Registro Nacional de Personas con Competencias Certificadas se
@@ -304,13 +277,10 @@
         </p>
 
 
-        <!-- =================================================
-             BUSCADOR
-        ================================================== -->
-
         <form
           class="search-form"
           id="search-form"
+          data-search-url="{{ route('certifications.search') }}"
         >
 
           <div class="search-field">
@@ -332,6 +302,8 @@
               name="search"
               autocomplete="off"
               aria-label="Buscar por CURP o Folio"
+              maxlength="50"
+              required
             >
 
           </div>
@@ -340,6 +312,7 @@
           <button
             type="submit"
             class="btn-search"
+            id="search-button"
           >
             Buscar
           </button>
@@ -347,14 +320,9 @@
         </form>
 
 
-        <!-- =================================================
-             RESULTADOS
-        ================================================== -->
-
         <div class="results-panel">
 
 
-          <!-- TABLA -->
           <div class="table-wrapper">
 
             <table class="renap-table">
@@ -415,22 +383,6 @@
 
               <tbody id="results-body">
 
-                <!--
-                  AQUÍ PUEDES AGREGAR LOS RESULTADOS REALES.
-
-                  EJEMPLO:
-
-                  <tr>
-                    <td>123456</td>
-                    <td>EC</td>
-                    <td>EC0001</td>
-                    <td>Ejemplo</td>
-                    <td>Entidad de certificación</td>
-                    <td>ECE</td>
-                    <td>Centro de evaluación</td>
-                  </tr>
-                -->
-
                 <tr class="placeholder-row">
 
                   <td colspan="7">
@@ -446,7 +398,6 @@
           </div>
 
 
-          <!-- MENSAJE SIN RESULTADOS -->
           <p
             class="empty-state"
             id="empty-state"
@@ -455,10 +406,6 @@
             No se encontraron resultados.
           </p>
 
-
-          <!-- ===============================================
-               PAGINACIÓN
-          ================================================ -->
 
           <div class="paginator">
 
@@ -530,16 +477,11 @@
   </main>
 
 
-  <!-- =====================================================
-       FOOTER
-  ====================================================== -->
-
   <footer class="main-footer">
 
     <div class="site-container footer-grid">
 
 
-      <!-- LOGO -->
       <div class="footer-column footer-logo">
 
         <img
@@ -550,7 +492,6 @@
       </div>
 
 
-      <!-- ENLACES -->
       <div class="footer-column">
 
         <h3>
@@ -614,7 +555,6 @@
       </div>
 
 
-      <!-- QUÉ ES GOB.MX -->
       <div class="footer-column">
 
         <h3>
@@ -669,7 +609,6 @@
       </div>
 
 
-      <!-- REDES -->
       <div class="footer-column footer-social">
 
         <h3>
@@ -773,6 +712,45 @@
     </div>
 
   </footer>
+
+
+  <!-- =====================================================
+       ANIMACIÓN DE CARGA
+  ====================================================== -->
+
+  <div
+    class="loading-overlay"
+    id="loading-overlay"
+    hidden
+    aria-hidden="true"
+  >
+
+    <div
+      class="loading-content"
+      role="status"
+      aria-live="polite"
+    >
+
+      <div
+        class="renap-loader"
+        aria-hidden="true"
+      >
+
+        <span class="renap-loader__dot renap-loader__dot--1"></span>
+        <span class="renap-loader__dot renap-loader__dot--2"></span>
+        <span class="renap-loader__dot renap-loader__dot--3"></span>
+
+        <span class="renap-loader__center"></span>
+
+      </div>
+
+      <p>
+        Cargando ....
+      </p>
+
+    </div>
+
+  </div>
 
 
   <script src="index.js"></script>
