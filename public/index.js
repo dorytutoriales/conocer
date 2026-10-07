@@ -310,6 +310,17 @@ function renderResults(records) {
 
   });
 
+
+  /*
+   * La página original conserva una fila blanca debajo
+   * del resultado. Esto permite reproducir visualmente
+   * el bloque mostrado en la referencia.
+   */
+
+  resultsBody.appendChild(
+    createPlaceholderRow()
+  );
+
 }
 
 

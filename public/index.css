@@ -10,7 +10,9 @@
 
   --text: #414141;
   --gray: #666666;
-  --table-gray: #9f9f9f;
+
+  /* Gris exacto aproximado de la tabla original */
+  --table-gray: #9c9c9c;
 
   --border: #d7d7d7;
 }
@@ -68,11 +70,14 @@ a {
 
 /* =========================================================
    CONTENEDOR PRINCIPAL
+
+   La referencia original tiene un área de contenido más
+   ancha que la versión anterior de 1000px.
 ========================================================= */
 
 .site-container {
   width: calc(100% - 32px);
-  max-width: 1000px;
+  max-width: 1136px;
 
   margin-right: auto;
   margin-left: auto;
@@ -469,7 +474,7 @@ a {
 
 .renap-banner {
   width: calc(100% - 170px);
-  max-width: 825px;
+  max-width: 950px;
   min-height: 76px;
 
   margin: 0 auto 14px;
@@ -540,7 +545,9 @@ a {
 }
 
 
-/* LUPA GRANDE */
+/* =========================================================
+   LUPA GRANDE
+========================================================= */
 
 .renap-search-icon {
   position: relative;
@@ -576,7 +583,9 @@ a {
 }
 
 
-/* LABEL */
+/* =========================================================
+   LABEL
+========================================================= */
 
 .search-field label {
   display: block;
@@ -594,7 +603,9 @@ a {
 }
 
 
-/* INPUT */
+/* =========================================================
+   INPUT
+========================================================= */
 
 .search-field input {
   width: 100%;
@@ -684,7 +695,7 @@ a {
 
 
 /* =========================================================
-   TABLA
+   CONTENEDOR TABLA
 ========================================================= */
 
 .table-wrapper {
@@ -697,9 +708,13 @@ a {
   background: #ffffff;
 
   box-shadow:
-    0 4px 11px rgba(0, 0, 0, 0.20);
+    0 4px 11px rgba(0, 0, 0, 0.24);
 }
 
+
+/* =========================================================
+   TABLA
+========================================================= */
 
 .renap-table {
   width: 100%;
@@ -715,55 +730,68 @@ a {
 }
 
 
-/* ANCHOS */
+/* =========================================================
+   ANCHOS EXACTOS DE COLUMNAS
+
+   Aproximación a las proporciones de la tabla de referencia:
+   Folio      97px
+   Tipo       63px
+   Código     91px
+   Título    165px
+   Entidad   286px
+   Siglas     79px
+   Evaluador 325px
+========================================================= */
 
 .col-folio {
-  width: 7.5%;
+  width: 8.8%;
 }
 
 
 .col-tipo {
-  width: 5.5%;
+  width: 5.7%;
 }
 
 
 .col-codigo {
-  width: 8.5%;
+  width: 8.2%;
 }
 
 
 .col-titulo {
-  width: 7%;
+  width: 14.9%;
 }
 
 
 .col-entidad {
-  width: 34%;
+  width: 25.9%;
 }
 
 
 .col-siglas {
-  width: 7%;
+  width: 7.1%;
 }
 
 
 .col-evaluador {
-  width: 30.5%;
+  width: 29.4%;
 }
 
 
-/* ENCABEZADOS */
+/* =========================================================
+   ENCABEZADOS
+========================================================= */
 
 .renap-table thead th {
-  height: 65px;
+  height: 73px;
 
   padding: 6px;
 
-  border-right: 1px solid #d8d8d8;
-  border-bottom: 1px solid #bdbdbd;
+  border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
 
   color: #000000;
-  background: #9f9f9f;
+  background: var(--table-gray);
 
   font-size: 18px;
   font-weight: 700;
@@ -780,14 +808,16 @@ a {
 }
 
 
-/* CELDAS */
+/* =========================================================
+   CELDAS GENERALES
+========================================================= */
 
 .renap-table tbody td {
-  height: 40px;
+  height: 46px;
 
   padding: 8px;
 
-  border-top: 1px solid #e1e1e1;
+  border-top: 1px solid #dddddd;
 
   color: #333333;
   background: #ffffff;
@@ -798,12 +828,20 @@ a {
 }
 
 
-/* FILA VACÍA */
+/* =========================================================
+   FILA VACÍA
+========================================================= */
 
 .placeholder-row td {
-  height: 40px !important;
+  height: 46px !important;
+
+  padding: 0 !important;
+
+  border-right: 0 !important;
 
   background: #ffffff !important;
+
+  font-weight: 400 !important;
 }
 
 
@@ -1178,6 +1216,7 @@ a {
 
   .renap-banner {
     width: 86%;
+    max-width: none;
 
     font-size: 20px;
   }
@@ -1298,6 +1337,7 @@ a {
 
   .renap-banner {
     width: 100%;
+    max-width: none;
     min-height: 65px;
 
     padding: 14px 18px;
@@ -1375,20 +1415,22 @@ a {
 
 }
 
+
 /* =========================================================
    RESULTADOS REALES
 ========================================================= */
 
 .renap-table tbody tr:not(.placeholder-row) td {
-  height: 49px;
+  height: 58px;
 
   padding: 8px;
 
-  border-top: 1px solid #dedede;
-  border-right: 1px solid #dedede;
+  border-top: 1px solid #dddddd;
+  border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
 
   color: #000000;
-  background: #f0f0f0;
+  background: #f2f2f2;
 
   font-family: Arial, sans-serif;
 
@@ -1397,7 +1439,13 @@ a {
 
   line-height: 1.25;
 
+  text-align: left;
   vertical-align: top;
+
+  white-space: normal;
+
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 
@@ -1406,11 +1454,18 @@ a {
 }
 
 
+/* =========================================================
+   FILA VACÍA INFERIOR
+========================================================= */
+
 .placeholder-row td {
-  height: 40px !important;
+  height: 46px !important;
+
+  padding: 0 !important;
 
   border-right: 0 !important;
 
+  color: transparent !important;
   background: #ffffff !important;
 
   font-weight: 400 !important;
